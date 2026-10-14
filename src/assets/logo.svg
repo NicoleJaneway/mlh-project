@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 380 60" width="100%" height="60" fill="none">
+  <!-- Gradient Definitions -->
+  <defs>
+    <linearGradient id="aiGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F97316" />
+      <stop offset="100%" stop-color="#EA580C" />
+    </linearGradient>
+    <linearGradient id="nodeGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FB923C" />
+      <stop offset="100%" stop-color="#C2410C" />
+    </linearGradient>
+  </defs>
+
+  <!-- Logo Mark Icon: Compass Bridge Node -->
+  <g transform="translate(5, 5)">
+    <!-- Outer Shield / Container -->
+    <rect x="0" y="0" width="50" height="50" rx="12" fill="url(#aiGradient)" />
+    
+    <!-- Compass Navigator Lines -->
+    <path d="M25 10 L25 40 M10 25 L40 25" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" opacity="0.4" />
+    
+    <!-- Dynamic Bridge Nodes -->
+    <path d="M14 34 Q25 16 36 34" stroke="#FFFFFF" stroke-dasharray="2 2" stroke-width="2" fill="none" />
+    
+    <!-- Central AI Node Core -->
+    <circle cx="25" cy="22" r="6" fill="#FFFFFF" />
+    <circle cx="25" cy="22" r="3" fill="#EA580C" />
+    
+    <!-- Connected Opportunity Nodes -->
+    <circle cx="14" cy="34" r="3.5" fill="#FFFFFF" />
+    <circle cx="36" cy="34" r="3.5" fill="#FFFFFF" />
+  </g>
+
+  <!-- Typography -->
+  <!-- "THE AI COLLECTIVE" Sub-Brand -->
+  <text x="68" y="22" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="11" font-weight="800" fill="#EA580C" letter-spacing="1.5">
+    THE AI COLLECTIVE
+  </text>
+
+  <!-- "Jobs Navigator" Primary Title -->
+  <text x="68" y="44" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="22" font-weight="900" fill="#0F172A" letter-spacing="-0.5">
+    Jobs Navigator
+  </text>
+</svg>
