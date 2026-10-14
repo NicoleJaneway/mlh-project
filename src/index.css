@@ -546,3 +546,53 @@ body {
   color: #c2410c;
   border: 1px solid #ffedd5;
 }
+
+p a,
+.card-text a,
+.highlight-link {
+  color: inherit;
+  font-weight: 600;
+  text-decoration: underline;
+  text-decoration-color: #f97316;
+  text-decoration-thickness: 2.5px;
+  text-underline-offset: 3px;
+  transition: all 0.2s ease;
+}
+
+p a:hover,
+.card-text a:hover,
+.highlight-link:hover {
+  color: #ea580c;
+  text-decoration-color: #ea580c;
+  text-underline-offset: 5px;
+}
+
+/* Container Centering */
+.app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1.5rem;
+}
+
+/* Dimming/Graying Inactive Components */
+.faded {
+  opacity: 0.45;
+  filter: grayscale(40%);
+  transition: opacity 0.3s ease, filter 0.3s ease;
+}
+
+.faded:hover {
+  opacity: 0.85;
+  filter: grayscale(0%);
+}
+
+/* Compact Filter Buttons */
+.btn-compact {
+  width: auto !important;
+  padding: 0.5rem 1rem !important;
+  font-size: 0.8rem !important;
+  align-self: flex-start;
+}

@@ -1,12 +1,15 @@
-import { useState, useMemo, FormEvent } from "react";
+import React, { useState, useMemo, FormEvent } from "react";
 import { INITIAL_BLS_JOBS, INITIAL_LIVE_JOBS, LiveJob } from "./jobData";
-
 import Logo from "./components/Logo";
+import Intro from "./components/Intro";
 
 export default function App() {
   const [searchInput, setSearchInput] = useState<string>("");
   const [activeSearch, setActiveSearch] = useState<string>("");
   const [carouselIndex, setCarouselIndex] = useState<number>(0);
+  const [filterMode, setFilterMode] = useState<"none" | "search" | "bls">(
+    "none",
+  );
   const [selectedJobForSkills, setSelectedJobForSkills] =
     useState<LiveJob | null>(null);
   const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
@@ -30,30 +33,64 @@ export default function App() {
 
   const handleSearchSubmit = (e: FormEvent) => {
     e.preventDefault();
-    setActiveSearch(searchInput);
+    if (searchInput.trim()) {
+      setActiveSearch(searchInput);
+      setFilterMode("search");
+    }
   };
 
+  const handleApplyBlsFilter = () => {
+    setFilterMode("bls");
+    setActiveSearch("");
+    setSearchInput("");
+  };
+
+  const handleResetFilters = () => {
+    setFilterMode("none");
+    setActiveSearch("");
+    setSearchInput("");
+  };
+
+  // Filter live jobs by active mode
   const filteredJobs = useMemo(() => {
-    if (!activeSearch.trim()) return INITIAL_LIVE_JOBS;
-    const query = activeSearch.toLowerCase();
-    return INITIAL_LIVE_JOBS.filter(
-      (job) =>
-        job.title.toLowerCase().includes(query) ||
-        job.company.toLowerCase().includes(query) ||
-        job.location.toLowerCase().includes(query) ||
-        job.requiredSkills.some((skill) => skill.toLowerCase().includes(query)),
-    );
-  }, [activeSearch]);
+    let result = INITIAL_LIVE_JOBS;
+
+    if (filterMode === "bls") {
+      return result.filter((job) => job.matchedRole === currentBlsJob.title);
+    }
+
+    if (filterMode === "search" && activeSearch.trim()) {
+      const query = activeSearch.toLowerCase();
+      return result.filter(
+        (job) =>
+          job.title.toLowerCase().includes(query) ||
+          job.company.toLowerCase().includes(query) ||
+          job.location.toLowerCase().includes(query) ||
+          job.matchedRole.toLowerCase().includes(query) ||
+          job.requiredSkills.some((skill) =>
+            skill.toLowerCase().includes(query),
+          ),
+      );
+    }
+
+    return result;
+  }, [filterMode, activeSearch, currentBlsJob.title]);
 
   return (
     <div className="app-container">
       {/* HEADER */}
       <header className="app-header">
-        <div>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "flex-start",
+          }}
+        >
           <Logo />
           <p className="tagline">
-            Translating Macro Bureau of Labor Statistics into Immediate
-            Real-World Career Pathways
+            Connecting displaced workers to real-world career transitions using
+            U.S. BLS labor insights.
           </p>
         </div>
 
@@ -77,31 +114,21 @@ export default function App() {
 
       {/* TOP SECTION */}
       <div className="top-grid">
-        {/* LEFT COLUMN */}
-        <div className="left-column">
+        {/* LEFT COLUMN - SEARCH PANEL */}
+        <div className={`left-column ${filterMode === "bls" ? "faded" : ""}`}>
           <div className="card">
             <div className="card-label">
               <span className="indicator-dot"></span>
               Career Transition Guide
             </div>
-            <h2 className="card-heading">Navigating Job Displacement</h2>
-            <p className="card-text">
-              When facing layoff or industry displacement, macroeconomic data
-              can feel abstract. This platform bridges{" "}
-              <strong className="highlight">
-                Bureau of Labor Statistics (BLS)
-              </strong>{" "}
-              10-year outlooks with{" "}
-              <strong className="highlight">real-time open positions</strong> to
-              give you a clear, actionable transition route.
-            </p>
+            <h2 className="card-heading">Navigating Role Changes</h2>
+            <Intro />
           </div>
 
           <div className="card">
-            <h3 className="card-heading">Enter Your Experience or Target</h3>
+            <h3 className="card-heading">Find Jobs Matching Your Experience</h3>
             <p className="card-text">
-              Input your previous title or target skills to filter live
-              opportunities.
+              Search by job title, everyday skills, or industry keywords:
             </p>
 
             <form onSubmit={handleSearchSubmit} className="search-form">
@@ -110,16 +137,13 @@ export default function App() {
                   type="text"
                   value={searchInput}
                   onChange={(e) => setSearchInput(e.target.value)}
-                  placeholder="e.g., Python, Developer, Analyst..."
+                  placeholder="e.g., Driving, Customer Care, Safety..."
                   className="text-input"
                 />
                 {searchInput && (
                   <button
                     type="button"
-                    onClick={() => {
-                      setSearchInput("");
-                      setActiveSearch("");
-                    }}
+                    onClick={handleResetFilters}
                     className="clear-btn"
                   >
                     ✕ Clear
@@ -128,19 +152,16 @@ export default function App() {
               </div>
 
               <div className="button-group">
-                <button type="submit" className="btn-primary">
-                  Search Opportunities
+                <button type="submit" className="btn-primary btn-compact">
+                  Filter
                 </button>
-                {activeSearch && (
+                {filterMode !== "none" && (
                   <button
                     type="button"
-                    onClick={() => {
-                      setSearchInput("");
-                      setActiveSearch("");
-                    }}
+                    onClick={handleResetFilters}
                     className="btn-secondary"
                   >
-                    Reset
+                    Show All
                   </button>
                 )}
               </div>
@@ -155,32 +176,39 @@ export default function App() {
             >
               <span className="metric-title">Quick Skill Filters:</span>
               <div className="skill-tags">
-                {["React", "SQL", "Python", "Healthcare", "Cybersecurity"].map(
-                  (tag) => (
-                    <button
-                      key={tag}
-                      onClick={() => {
-                        setSearchInput(tag);
-                        setActiveSearch(tag);
-                      }}
-                      className="tag-btn"
-                    >
-                      + {tag}
-                    </button>
-                  ),
-                )}
+                {[
+                  "Customer Care",
+                  "Patient Care",
+                  "Logistics",
+                  "Troubleshooting",
+                  "Safety",
+                ].map((tag) => (
+                  <button
+                    key={tag}
+                    onClick={() => {
+                      setSearchInput(tag);
+                      setActiveSearch(tag);
+                      setFilterMode("search");
+                    }}
+                    className="tag-btn"
+                  >
+                    + {tag}
+                  </button>
+                ))}
               </div>
             </div>
           </div>
         </div>
 
-        {/* RIGHT COLUMN */}
-        <div className="carousel-card">
+        {/* RIGHT COLUMN - BLS CAROUSEL PANEL */}
+        <div
+          className={`carousel-card ${filterMode === "search" ? "faded" : ""}`}
+        >
           <div className="carousel-header">
             <div>
-              <div className="card-label">BLS Data Viewer</div>
+              <div className="card-label">High-Growth Sector Explorer</div>
               <h2 className="card-heading">
-                Fastest Growing National Occupations
+                Top Growing Resilient Occupations
               </h2>
             </div>
 
@@ -214,11 +242,11 @@ export default function App() {
 
             <div className="metrics-grid">
               <div>
-                <span className="metric-title">Median Annual Salary</span>
+                <span className="metric-title">Median Annual Pay</span>
                 <span className="metric-value">{currentBlsJob.medianPay}</span>
               </div>
               <div>
-                <span className="metric-title">National Demand Tier</span>
+                <span className="metric-title">National Job Demand</span>
                 <span className="metric-value" style={{ color: "#ea580c" }}>
                   {currentBlsJob.demandLevel}
                 </span>
@@ -227,7 +255,7 @@ export default function App() {
 
             <div>
               <span className="metric-title" style={{ marginBottom: "0.5rem" }}>
-                Core Skills & Competencies (O*NET Crosswalk):
+                Core Transferable Skills:
               </span>
               <div className="skill-tags">
                 {currentBlsJob.topSkills.map((skill) => (
@@ -240,9 +268,14 @@ export default function App() {
           </div>
 
           <div className="carousel-footer">
-            <span>
-              Source: U.S. Bureau of Labor Statistics (OEWS Projections)
-            </span>
+            <button
+              onClick={handleApplyBlsFilter}
+              className="btn-primary btn-compact"
+              style={{ maxWidth: "300px" }}
+            >
+              Filter
+            </button>
+
             <div className="dot-nav">
               {INITIAL_BLS_JOBS.map((_, idx) => (
                 <button
@@ -267,35 +300,87 @@ export default function App() {
               </span>
             </h2>
             <p className="card-text">
-              Active postings aggregated from partner boards matched against
-              target BLS sectors.
+              {filterMode === "bls" ? (
+                <span>
+                  Showing positions matching BLS sector:{" "}
+                  <strong className="highlight">{currentBlsJob.title}</strong>
+                </span>
+              ) : filterMode === "search" ? (
+                <span>
+                  Showing results for search:{" "}
+                  <strong className="highlight">"{activeSearch}"</strong>
+                </span>
+              ) : (
+                "Open opportunities from community partners cross-referenced against growth sectors."
+              )}
             </p>
           </div>
+
+          {filterMode !== "none" && (
+            <button
+              onClick={handleResetFilters}
+              className="btn-secondary"
+              style={{ fontSize: "0.75rem" }}
+            >
+              Reset Filters
+            </button>
+          )}
         </div>
 
         <div className="listings-scroll">
           {filteredJobs.length === 0 ? (
-            <p
-              className="card-text"
-              style={{ textAlign: "center", padding: "2rem" }}
-            >
-              No live listings matched your search criteria.
-            </p>
+            <div style={{ textAlign: "center", padding: "2rem" }}>
+              <p className="card-text">
+                No live listings found for this specific filter.
+              </p>
+              <button
+                onClick={handleResetFilters}
+                className="btn-secondary"
+                style={{ marginTop: "0.5rem" }}
+              >
+                Clear Filters
+              </button>
+            </div>
           ) : (
             filteredJobs.map((job) => (
               <div key={job.id} className="job-card">
                 <div className="job-card-info">
-                  <h3
-                    className="card-heading"
-                    style={{ margin: 0, fontSize: "1rem" }}
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "0.5rem",
+                      flexWrap: "wrap",
+                    }}
                   >
-                    {job.title}
-                  </h3>
+                    <h3
+                      className="card-heading"
+                      style={{ margin: 0, fontSize: "1rem" }}
+                    >
+                      {job.title}
+                    </h3>
+                    <span
+                      className="badge-skill"
+                      style={{
+                        fontSize: "0.65rem",
+                        background: "#fff7ed",
+                        color: "#ea580c",
+                        borderColor: "#fed7aa",
+                      }}
+                    >
+                      Matched to: {job.matchedRole}
+                    </span>
+                  </div>
+
                   <div className="job-card-meta">
-                    <span>{job.company}</span>
+                    <span>
+                      <strong>{job.company}</strong>
+                    </span>
                     <span>📍 {job.location}</span>
                     <span className="salary">💰 {job.salary}</span>
+                    <span>🕒 {job.posted}</span>
                   </div>
+
                   <div className="skill-tags">
                     {job.requiredSkills.map((sk) => (
                       <span key={sk} className="badge-skill">
@@ -310,13 +395,15 @@ export default function App() {
                     onClick={() => setSelectedJobForSkills(job)}
                     className="btn-secondary"
                   >
-                    Suggest Skill Plan
+                    Skill Roadmap
                   </button>
                   <a
                     href="#apply"
                     onClick={(e) => {
                       e.preventDefault();
-                      alert(`Applying to ${job.title}`);
+                      alert(
+                        `Redirecting to direct application for ${job.title} at ${job.company}`,
+                      );
                     }}
                     className="btn-primary"
                     style={{
@@ -345,7 +432,7 @@ export default function App() {
               ✕
             </button>
 
-            <div className="card-label">Skill Gap & Recommendations</div>
+            <div className="card-label">Transition & Skill Plan</div>
             <h3 className="card-heading">{selectedJobForSkills.title}</h3>
             <p className="card-text" style={{ marginBottom: "1rem" }}>
               {selectedJobForSkills.company} • {selectedJobForSkills.location}
@@ -354,27 +441,41 @@ export default function App() {
             <div className="job-details-box">
               <span
                 className="metric-title"
-                style={{ fontWeight: 700, marginBottom: "0.5rem" }}
+                style={{
+                  fontWeight: 700,
+                  marginBottom: "0.5rem",
+                  color: "#0f172a",
+                }}
               >
-                Recommended Learning Roadmap:
+                Recommended 1-to-2 Week Micro-Steps:
               </span>
               <ul className="roadmap-list">
                 {selectedJobForSkills.requiredSkills.map(
                   (skill: string, index: number) => (
                     <li key={skill} className="roadmap-item">
                       <span>
-                        Step {index + 1}: Master <strong>{skill}</strong>
+                        Step {index + 1}: Build competency in{" "}
+                        <strong>{skill}</strong>
                       </span>
-                      <span className="course-pill">1-2 Wk Micro-Course</span>
+                      <span className="course-pill">Free Community Course</span>
                     </li>
                   ),
                 )}
               </ul>
             </div>
 
+            <p
+              className="card-text"
+              style={{ marginTop: "1rem", fontSize: "0.75rem" }}
+            >
+              💡 <strong>Career Tip:</strong> Highlighting these core
+              competencies on your resume increases callback rates for displaced
+              workers transitioning across adjacent sectors.
+            </p>
+
             <div
               style={{
-                marginTop: "1.5rem",
+                marginTop: "1.25rem",
                 display: "flex",
                 justifyContent: "flex-end",
               }}
@@ -383,7 +484,7 @@ export default function App() {
                 onClick={() => setSelectedJobForSkills(null)}
                 className="btn-primary"
               >
-                Got It
+                Close Plan
               </button>
             </div>
           </div>
