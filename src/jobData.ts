@@ -63,34 +63,34 @@ export const INITIAL_BLS_JOBS: BlsJob[] = [
     topSkills: ['Healthcare Admin', 'Compliance', 'Operations', 'Budgeting', 'EHR Systems']
   },
   {
-    id: 'soc-31-1120',
-    title: 'Home Health & Personal Care Aide',
-    socCode: '31-1120',
-    growthRate: '+22%',
-    medianPay: '$33,380 / yr',
-    description: 'Provide daily care, monitoring, and assistance for patients in community and home healthcare settings.',
-    demandLevel: 'Very High',
-    topSkills: ['Patient Care', 'CPR & First Aid', 'Compassion', 'Vital Signs Monitoring', 'Communication']
+    id: 'bls-renewable-tech',
+    title: 'Wind Turbine Service Technician',
+    socCode: '49-9081',
+    growthRate: '+30%',
+    medianPay: '$64,120 / yr',
+    description: 'Inspect, troubleshoot, and repair utility-scale wind turbines using advanced diagnostic sensors and mechanical safety protocols.',
+    demandLevel: 'Extremely High',
+    topSkills: ['Equipment Inspection', 'Electrical Systems', 'Troubleshooting', 'Safety', 'Mechanical Repair']
   },
   {
-    id: 'soc-53-3032',
-    title: 'Heavy & Tractor-Trailer Truck Driver',
-    socCode: '53-3032',
-    growthRate: '+15%',
-    medianPay: '$54,200 / yr',
-    description: 'Transport goods and materials regionally using fleet route planning and safety logging tools.',
+    id: 'bls-logistics-analyst',
+    title: 'Logistics & Supply Chain Specialist',
+    socCode: '13-1081',
+    growthRate: '+18%',
+    medianPay: '$82,320 / yr',
+    description: 'Analyze supply chain networks, manage inventory flow, and optimize delivery routing across global transportation channels.',
     demandLevel: 'High',
-    topSkills: ['Commercial Driving (CDL)', 'GPS & Route Planning', 'Logistics Safety', 'Time Management', 'Vehicle Inspection']
+    topSkills: ['Logistics', 'Inventory Management', 'Data Analytics', 'Vendor Relations', 'Problem Solving']
   },
   {
-    id: 'soc-43-4051',
-    title: 'Customer Service & Support Specialist',
-    socCode: '43-4051',
-    growthRate: '+12%',
-    medianPay: '$41,200 / yr',
-    description: 'Assist clients across help centers, digital channels, and ticketing platforms.',
+    id: 'bls-industrial-tech',
+    title: 'Industrial Machinery Technician',
+    socCode: '49-9041',
+    growthRate: '+18%',
+    medianPay: '$64,520 / yr',
+    description: 'Maintain, calibrate, and repair automated manufacturing equipment, robotics, and industrial production machinery.',
     demandLevel: 'High',
-    topSkills: ['Customer Relations', 'CRM & Helpdesk Tools', 'Problem Solving', 'Data Entry', 'Active Listening']
+    topSkills: ['Mechanical Maintenance', 'Troubleshooting', 'Equipment Calibration', 'Safety', 'Blueprint Reading']
   }
 ];
 

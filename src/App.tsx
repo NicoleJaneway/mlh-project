@@ -28,7 +28,16 @@ export default function App() {
 
   const handleRefresh = () => {
     setIsRefreshing(true);
-    setTimeout(() => setIsRefreshing(false), 600);
+
+    // Clear all filters, inputs, and reset carousel to first job
+    setFilterMode("none");
+    setActiveSearch("");
+    setSearchInput("");
+    setCarouselIndex(0);
+
+    setTimeout(() => {
+      setIsRefreshing(false);
+    }, 600);
   };
 
   const handleSearchSubmit = (e: FormEvent) => {
@@ -108,14 +117,15 @@ export default function App() {
               d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
             />
           </svg>
-          Refresh Data
+          Refresh
         </button>
       </header>
 
       {/* TOP SECTION */}
       <div className="top-grid">
         {/* LEFT COLUMN - SEARCH PANEL */}
-        <div className={`left-column ${filterMode === "bls" ? "faded" : ""}`}>
+        <div className="left-column">
+          {/* INTRO CARD - Always active/unfaded */}
           <div className="card">
             <div className="card-label">
               <span className="indicator-dot"></span>
@@ -125,7 +135,8 @@ export default function App() {
             <Intro />
           </div>
 
-          <div className="card">
+          {/* SEARCH FILTER CARD - Grays out when BLS filter is active */}
+          <div className={`card ${filterMode === "bls" ? "faded" : ""}`}>
             <h3 className="card-heading">Find Jobs Matching Your Experience</h3>
             <p className="card-text">
               Search by job title, everyday skills, or industry keywords:
