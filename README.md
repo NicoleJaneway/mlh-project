@@ -11,7 +11,7 @@ In the age of rapid technological acceleration, job displacement leaves workers 
 
 ---
 
-## 🚀 The Solution: BridgePath Navigator
+## 🚀 The Solution: Jobs Navigator
 **The AI Collective Jobs Navigator** transforms macroeconomic BLS projections into immediate, actionable career paths for displaced workers:
 
 1. **Macro-to-Micro Data Alignment:** Connects BLS Standard Occupational Classification (SOC) codes and 10-year growth data to live job board listings.
